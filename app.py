@@ -17,7 +17,7 @@ if st.button("🚀 Procesar imagen"):
     if imagen_subida is not None:
         try:
             with st.spinner("Procesando imagen... ⏳"):
-                files = {"file": imagen_subida.getvalue()}
+                files = {"file": (imagen_subida.name, imagen_subida.getvalue(), imagen_subida.type)}
                 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
                 response = requests.post(f"{BACKEND_URL}/model/predict", files=files)
 
