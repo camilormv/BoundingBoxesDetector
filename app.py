@@ -11,7 +11,7 @@ st.markdown("Sube una imagen para que el modelo detecte las cajas vacías y llen
 imagen_subida = st.file_uploader("📤 Sube una imagen", type=["jpg", "jpeg", "png"])
 
 if imagen_subida:
-    st.image(imagen_subida, caption="📷 Imagen Original", use_column_width=True)
+    st.image(imagen_subida, caption="📷 Imagen Original", use_container_width=True)
 
 if st.button("🚀 Procesar imagen"):
     if imagen_subida is not None:
@@ -19,7 +19,7 @@ if st.button("🚀 Procesar imagen"):
             with st.spinner("Procesando imagen... ⏳"):
                 files = {"file": imagen_subida.getvalue()}
                 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
-                response = requests.post(f"{BACKEND_URL}/procesar/", files=files)
+                response = requests.post(f"{BACKEND_URL}/model/predict", files=files)
 
                 if response.status_code == 200:
                     imagen_procesada = Image.open(io.BytesIO(response.content))
