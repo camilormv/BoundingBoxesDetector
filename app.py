@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 from PIL import Image
 import io
+import os
 
 st.set_page_config(page_title="Detector de Cajas", page_icon="📦", layout="centered")
 st.title("📦 Detector de Cajas Vacías y Llenas con IA")
@@ -17,7 +18,8 @@ if st.button("🚀 Procesar imagen"):
         try:
             with st.spinner("Procesando imagen... ⏳"):
                 files = {"file": imagen_subida.getvalue()}
-                response = requests.post("http://localhost:8000/procesar/", files=files)
+                BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+                response = requests.post(f"{BACKEND_URL}/procesar/", files=files)
 
                 if response.status_code == 200:
                     imagen_procesada = Image.open(io.BytesIO(response.content))
