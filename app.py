@@ -3,6 +3,7 @@ import requests
 from PIL import Image
 import io
 import os
+import base64
 
 st.set_page_config(page_title="Detector de Cajas", page_icon="📦", layout="centered")
 st.title("📦 Detector de Cajas Vacías y Llenas con IA")
@@ -22,9 +23,11 @@ if st.button("🚀 Procesar imagen"):
                 response = requests.post(f"{BACKEND_URL}/model/predict", files=files)
 
                 if response.status_code == 200:
-                    imagen_procesada = Image.open(io.BytesIO(response.content))
-                    st.success("✅ Procesamiento completado")
-                    st.image(imagen_procesada, caption="📦 Imagen Procesada", use_column_width=True)
+                    data = response.json()
+                    img_bytes = base64.b64decode(data["image_base64"])
+                    imagen_procesada = Image.open(io.BytesIO(img_bytes))
+                    st.success(f"✅ Procesamiento completado – Objetos detectados: {data['num_objects']}")
+                    st.image(imagen_procesada, caption="📦 Imagen Procesada", use_container_width=True)
                 else:
                     st.error(f"❌ Error al procesar la imagen. Código: {response.status_code}")
         except Exception as e:
